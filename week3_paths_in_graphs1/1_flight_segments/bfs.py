@@ -11,7 +11,6 @@ def distance(adj, s, t):
     distance[s] = 0
     q = queue.Queue()
     q.put(s)
-
     while q.qsize() > 0:
         node = q.get()
         for vertex in adj[node]:

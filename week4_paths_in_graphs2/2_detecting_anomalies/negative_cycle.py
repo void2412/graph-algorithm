@@ -1,11 +1,50 @@
 #Uses python3
-
+import math
 import sys
+import queue
+
+
+
+def Bellman_Ford(adj, cost, root):
+    #get number of vertex
+    size=len(adj)
+
+    #init computing data
+    dist = []
+    prev =[]
+    
+    for i in range(size):
+        dist.append(math.inf)
+        prev.append(-1)
+
+    #init value of root
+    dist[root]=0
+    
+    #bellmanFord iteration
+    for i in range(1, size):
+        #get list of adj of vertex i
+        adjList = adj[i]
+        x = 0
+        for vertex in adjList:
+            if dist[vertex] > (dist[i] + cost[i][x]):
+                dist[vertex] = dist[i] + cost[i][x]
+                prev[vertex] = i
+            
+            x += 1
+
+    for i in range(size):
+        adjList = adj[i]
+        x = 0
+        for vertex in adjList:
+            if dist[vertex] > (dist[i] + cost[i][x]):
+                return 1
+    return 0
 
 
 def negative_cycle(adj, cost):
-    #write your code here
-    return 0
+    result = Bellman_Ford(adj, cost, 0)
+
+    return result
 
 
 if __name__ == '__main__':

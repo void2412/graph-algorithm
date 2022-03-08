@@ -3,9 +3,52 @@
 import sys
 import queue
 
+def Bellman_Ford(adj, cost, root, dist):
+    #get number of vertex
+    size=len(adj)
+
+    #init computing data
+    prev =[]
+    queueLast = queue.Queue()
+    for i in range(size):
+        prev.append(-1)
+
+    #init value of root
+    dist[root]=0
+    
+    #bellmanFord iteration
+    for i in range(size):
+        #get list of adj of vertex i
+        adjList = adj[i]
+        x = 0
+        for vertex in adjList:
+            if dist[vertex] > (dist[i] + cost[i][x]):
+                dist[vertex] = dist[i] + cost[i][x]
+                prev[vertex] = i
+            if i == (size-1):
+                queueLast.put(vertex)
+            x += 1
+    
+    return (queueLast, prev)
+
+
+
+def findNegCycle(adj, cost, queueV, prev):
+    while queueV.qsize() > 0:
+        negativeCycle = []
+        node = queueV.get()
+        negativeCycle.append(node)
+
+        for i in range(size):
+            nodeP = prev[node]
+            if nodeP == beginNode:
+                return negativeCycle
+            else:
+                negativeCycle.append(nodeP)
+    pass
 
 def shortet_paths(adj, cost, s, distance, reachable, shortest):
-    #write your code here
+    
     pass
 
 

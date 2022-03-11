@@ -21,17 +21,18 @@ def Bellman_Ford(adj, cost, root):
     dist[root]=0
     
     #bellmanFord iteration
-    for i in range(size):
-        #get list of adj of vertex i
-        adjList = adj[i]
-        x = 0
-        for vertex in adjList:
-            if dist[vertex] > (dist[i] + cost[i][x]):
-                dist[vertex] = dist[i] + cost[i][x]
-                prev[vertex] = i
-            if i == (size-1):
-                queueLast.put(vertex)
-            x += 1
+    for y in range(size):
+        for i in range(size):
+            #get list of adj of vertex i
+            adjList = adj[i]
+            x = 0
+            for vertex in adjList:
+                if dist[vertex] > (dist[i] + cost[i][x]):
+                    dist[vertex] = dist[i] + cost[i][x]
+                    prev[vertex] = i
+                    if y == (size-1):
+                        queueLast.put(vertex)
+                x += 1
 
     while queueLast.qsize() > 0:
         node = queueLast.get()

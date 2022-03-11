@@ -2,6 +2,7 @@
 
 import sys
 import queue
+import math
 
 def Bellman_Ford(adj, cost, root, dist):
     #get number of vertex
@@ -17,38 +18,77 @@ def Bellman_Ford(adj, cost, root, dist):
     dist[root]=0
     
     #bellmanFord iteration
-    for i in range(size):
-        #get list of adj of vertex i
-        adjList = adj[i]
-        x = 0
-        for vertex in adjList:
-            if dist[vertex] > (dist[i] + cost[i][x]):
-                dist[vertex] = dist[i] + cost[i][x]
-                prev[vertex] = i
-            if i == (size-1):
-                queueLast.put(vertex)
-            x += 1
-    
-    return (queueLast, prev)
-
-
-
-def findNegCycle(adj, cost, queueV, prev):
-    while queueV.qsize() > 0:
-        negativeCycle = []
-        node = queueV.get()
-        negativeCycle.append(node)
-
+    for y in range(size):
         for i in range(size):
-            nodeP = prev[node]
-            if nodeP == beginNode:
-                return negativeCycle
+            #get list of adj of vertex i
+            adjList = adj[i]
+            x = 0
+            for vertex in adjList:
+                if dist[vertex] > (dist[i] + cost[i][x]):
+                    dist[vertex] = dist[i] + cost[i][x]
+                    prev[vertex] = i
+                    if y == (size-1):
+                        queueLast.put(vertex)
+                x += 1
+    
+    return (queueLast,prev)
+
+
+
+def findNegCycle(adj, queueV, prev):
+    while queueV.qsize() > 0:
+        negCycle=[]
+        node = queueV.get()
+        negCycle.append(node)
+
+        for i in range(len(adj)):
+            node = prev[node]
+            if node == negCycle[0]:
+                return negCycle
             else:
-                negativeCycle.append(nodeP)
+                negCycle.append(node)
+    
+    return False
     pass
 
-def shortet_paths(adj, cost, s, distance, reachable, shortest):
+def bfs(adj, root):
+    visited=[]
+    for i in range(len(adj)):
+        visited.append(False)
+
+    reachable =[]
+    visited[root]= True
+    reachable.append(root)
+    q = queue.Queue()
+    q.put(root)
     
+    while q.qsize() > 0:
+        node = q.get()
+        for vertex in adj[node]:
+            if visited[vertex] == False:
+                visited[vertex] = True
+                reachable.append(vertex)
+                q.put(vertex)
+
+    return reachable
+    pass
+
+
+def shortet_paths(adj, cost, s, distance, reachable, shortest):
+    (queueV,prev) = Bellman_Ford(adj, cost, s, distance)
+
+    negCycle = findNegCycle(adj, queueV, prev)
+    if negCycle != False:
+        for i in negCycle:
+            shortest[i] = 0
+            reachableFromNeg = bfs(adj, i)
+            for j in reachableFromNeg:
+                if shortest[j] == 1:
+                    shortest[j] = 0
+    
+    for i in range(len(adj)):
+        if distance[i] != math.inf:
+            reachable[i] = 1
     pass
 
 
@@ -66,7 +106,7 @@ if __name__ == '__main__':
         cost[a - 1].append(w)
     s = data[0]
     s -= 1
-    distance = [10**19] * n
+    distance = [math.inf] * n
     reachable = [0] * n
     shortest = [1] * n
     shortet_paths(adj, cost, s, distance, reachable, shortest)
